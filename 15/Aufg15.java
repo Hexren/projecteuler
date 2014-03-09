@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.math.BigInteger;
 
+
 public class Aufg15{
 
 	public static int MAX = 20;

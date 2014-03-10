@@ -4,7 +4,7 @@ public class Aufg19{
 	public static void main(String[] args){
 		int month = 1;
 		int year = 1901;
-		int days = 1;		
+		int days = 1; //starting day is a tuesday		
 		int sundays = 0;
 		while(year < 2001){
 			

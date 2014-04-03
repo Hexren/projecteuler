@@ -6,6 +6,7 @@ public class Aufg41{
     
     public static void main(String[] args){
         int j = 0;
+        //8 and 9 pandigital number digit sum is divisible by 3 so no primes there  
         for(int i=7654321; i>1; i=i-2){
 
             if(isPandigital(i) && isPrime(i)){

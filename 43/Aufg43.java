@@ -12,26 +12,26 @@ public class Aufg43{
 			incr(start);
             if(checkCondition(start)){
                 System.out.println(Arrays.toString(start));
-                i = i + makeNum(start, 1,10);
+                i = i + makeNumMath(start, 1,10);
             }                
 		}
         System.out.println(i);
     }
 
     public static boolean checkCondition(int[] digits){
-        if(makeNum(digits, 2,4) % 2L != 0)
+        if(makeNumMath(digits, 2,4) % 2L != 0)
             return false;
-        if(makeNum(digits, 3,5) % 3L != 0)
+        if(makeNumMath(digits, 3,5) % 3L != 0)
             return false;
-        if(makeNum(digits, 4,6) % 5L != 0)
+        if(makeNumMath(digits, 4,6) % 5L != 0)
             return false;
-        if(makeNum(digits, 5,7) % 7L != 0)
+        if(makeNumMath(digits, 5,7) % 7L != 0)
             return false;
-        if(makeNum(digits, 6,8) % 11L != 0)
+        if(makeNumMath(digits, 6,8) % 11L != 0)
             return false;
-        if(makeNum(digits, 7,9) % 13L != 0)
+        if(makeNumMath(digits, 7,9) % 13L != 0)
             return false;
-        if(makeNum(digits, 8,10) % 17L != 0)
+        if(makeNumMath(digits, 8,10) % 17L != 0)
             return false;
         
         return true;        
@@ -44,6 +44,17 @@ public class Aufg43{
             n += digits[i];
         }        
         return Long.valueOf(n);
+    }
+
+    //indices start at one, as in the problem description, this is the fast version
+    public static long makeNumMath(int[] digits, int start, int end){
+        long n = 0L;
+        long mult = 1;
+        for(int i=end-1; i>=start-1 ;i--){
+            n = n + (mult * digits[i]);
+            mult *= 10L;
+        } 
+        return n;
     }
 
     /*

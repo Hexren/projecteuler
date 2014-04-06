@@ -11,7 +11,7 @@ public class Aufg44{
 
     public static void main(String[] args){
 		
-		int max = 30000;
+		int max = 100000;
 
       	for(int n = 1; n<max ;n++){
 			ps.add((((long)n)*(3L*n-1))/2L);

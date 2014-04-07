@@ -1,9 +1,10 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class Aufg46{
        
-    public static Map<Long, Boolean> cache = new HashMap<Long, Boolean>();
+    public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
  
     public static void main(String[] args){
         long n = 1;

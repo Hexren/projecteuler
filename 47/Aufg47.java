@@ -10,7 +10,7 @@ public class Aufg47{
 	public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
 
 	public static void main(String[] args){
-		int consecs = 3;
+		int consecs = 4;
 		long n = 1;
 
 		Set[] facSets = new Set[consecs];

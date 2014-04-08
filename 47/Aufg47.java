@@ -2,21 +2,22 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Arrays;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.ArrayList;
 
 public class Aufg47{
 
-	public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
 	public static List<Long> ePrimes = eSieve(200000);
 	public static Long[] primeSearch;
+	public static int consecs = 4;
 
 	public static void main(String[] args){
 		primeSearch = ePrimes.toArray(new Long[1]);
-		int consecs = 4;
+		
 		long n = 1;
 
 		Set[] facSets = new Set[consecs];
@@ -24,32 +25,44 @@ public class Aufg47{
 
 		for(int j = 0; j < facSets.length; j++){
 			facSets[j] = factors(1);
-		}
+		}		
 
 		int i = 0;		
 		while( !(testExactNumFac(consecs, facSets) && disjoint(facSets)) ){
-
-			if(isPrime(n)){
-				facSets[i] = new HashSet<Long>();
-				numbers[i] = n;
-			}else{
-				facSets[i] = factors(n);
-				numbers[i] = n;
-			}
+			n++;
+			
 			i++;
 			i = i%consecs;
 
-			if(n%5000 == 0)
-				System.out.println(n);
+			if(isPrime(n)){
+				facSets[i] = new HashSet<Long>();
+				
+			}else{
+				facSets[i] = factors(n);
+			}
 
-			//if(n>15)
-			//	break;
-			n++;
+			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || factors(n+consecs-1).size() != consecs)){
+				reset(facSets);
+				n=n+consecs-1;	
+			}
+
+			numbers[i] = n;
+			
 		}
 		
 		Arrays.sort(numbers);
 		System.out.println(Arrays.toString(numbers));
 		System.out.println(Arrays.toString(facSets));
+	}
+
+	public static long next(Long n, Set[] sets, int currentIdx){		
+		
+		return n+1;
+	}
+
+	public static void reset(Set[] sets){
+		for(int i=0; i<sets.length; i++)
+			sets[i] = new HashSet<Long>();
 	}
 
 	//tests that there are exactly x factors in all sets
@@ -89,20 +102,21 @@ public class Aufg47{
 				f.fac = prime;
 				f.exp = 0;	
 				while(n%prime==0){
-					f.exp = f.exp + 1;
-					n = n/prime;
+					f.exp += 1;
+					n /= prime;
 				}
 				factors.add(f);
+				if(n == 1)
+					break;
 			} 
-			if(n == 1)
-				break;
+
 		}		
 		return factors;
 	}
 
 	public static List<Long> eSieve(long limit){
-		List<Long> primes = new ArrayList<Long>((int)limit/2);
-		List<Long> candidates = new ArrayList<Long>((int)limit/2);
+		List<Long> primes = new LinkedList<Long>();
+		List<Long> candidates = new LinkedList<Long>();
 
 		primes.add(2L);
 		for(long cand = 3; cand <= Math.max(limit,10); cand = cand+2){
@@ -110,7 +124,8 @@ public class Aufg47{
 		}
 
 		long nextPrime = candidates.remove(0);
-		while(nextPrime <= Math.sqrt(limit)){
+		long limitTest = (long)Math.sqrt(limit);
+		while(nextPrime <= limitTest){
 			primes.add(nextPrime);
 			for (Iterator<Long> it = candidates.iterator(); it.hasNext(); ){
 		    	if (it.next()%nextPrime==0)

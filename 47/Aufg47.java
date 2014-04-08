@@ -10,7 +10,7 @@ public class Aufg47{
 	public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
 
 	public static void main(String[] args){
-		int consecs = 2;
+		int consecs = 3;
 		long n = 1;
 
 		Set[] facSets = new Set[consecs];
@@ -72,7 +72,7 @@ public class Aufg47{
 		Set<Factor> factors = new HashSet<Factor>();
 		long n = no;
 		long foo = 1;
-		for(long i = 2;  i <= no; i++){
+		for(long i = 2;  i <= no && n > 1; i++){
 			if(no%i == 0 && isPrime(i)){
 				Factor f = new Factor();
 				f.fac = i;

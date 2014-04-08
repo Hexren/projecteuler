@@ -4,12 +4,18 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Aufg47{
 
 	public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
+	public static List<Long> ePrimes = eSieve(200000);
+	public static Long[] primeSearch;
 
 	public static void main(String[] args){
+		primeSearch = ePrimes.toArray(new Long[1]);
 		int consecs = 4;
 		long n = 1;
 
@@ -23,8 +29,13 @@ public class Aufg47{
 		int i = 0;		
 		while( !(testExactNumFac(consecs, facSets) && disjoint(facSets)) ){
 
-			facSets[i] = factors(n);
-			numbers[i] = n;
+			if(isPrime(n)){
+				facSets[i] = new HashSet<Long>();
+				numbers[i] = n;
+			}else{
+				facSets[i] = factors(n);
+				numbers[i] = n;
+			}
 			i++;
 			i = i%consecs;
 
@@ -71,46 +82,51 @@ public class Aufg47{
 	public static Set<Factor> factors(long no){
 		Set<Factor> factors = new HashSet<Factor>();
 		long n = no;
-		long foo = 1;
-
-		for(long i = 3;  i <= no && n > 1; i = i+2){
-			if(no%i == 0 && isPrime(i)){
+		
+		for(Long prime: ePrimes){
+			if(no%prime == 0){
 				Factor f = new Factor();
-				f.fac = i;
+				f.fac = prime;
 				f.exp = 0;	
-				while(n%i==0){
+				while(n%prime==0){
 					f.exp = f.exp + 1;
-					n = n/i;
+					n = n/prime;
 				}
 				factors.add(f);
-				//System.out.println(n);
 			} 
+			if(n == 1)
+				break;
 		}		
 		return factors;
+	}
+
+	public static List<Long> eSieve(long limit){
+		List<Long> primes = new ArrayList<Long>((int)limit/2);
+		List<Long> candidates = new ArrayList<Long>((int)limit/2);
+
+		primes.add(2L);
+		for(long cand = 3; cand <= Math.max(limit,10); cand = cand+2){
+			candidates.add(cand);
+		}
+
+		long nextPrime = candidates.remove(0);
+		while(nextPrime <= Math.sqrt(limit)){
+			primes.add(nextPrime);
+			for (Iterator<Long> it = candidates.iterator(); it.hasNext(); ){
+		    	if (it.next()%nextPrime==0)
+		        	it.remove();	
+			}
+			nextPrime = candidates.remove(0);
+		}
+
+		primes.addAll(candidates); 
+		return primes;
 	}
 
 
 	public static boolean isPrime(long n){
 		//n = Math.abs(n);
-		if(cache.containsKey(n))
-			return cache.get(n);
-    	
-        if(n == 2)
-            return true;
-		if(n <= 1) 
-			return false;
-		if(n % 2== 0)
-			return false;
-		
-		for(int i = 3; i <= Math.sqrt(n)+1; i = i + 2){
-			if(n % i == 0){
-				cache.put(n,false);
-				return false;
-		
-			}
-		}
-		cache.put(n,true);
-		return true;
+		return Arrays.binarySearch(primeSearch, n) >= 0;
 	}
 
 

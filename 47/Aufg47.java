@@ -14,6 +14,7 @@ public class Aufg47{
 	public static List<Long> ePrimes = eSieve(200000);
 	public static Long[] primeSearch;
 	public static int consecs = 4;
+	
 
 	public static void main(String[] args){
 		primeSearch = ePrimes.toArray(new Long[1]);
@@ -28,6 +29,7 @@ public class Aufg47{
 		}		
 
 		int i = 0;		
+		int counter = 0;
 		while( !(testExactNumFac(consecs, facSets) && disjoint(facSets)) ){
 			n++;
 			
@@ -44,6 +46,12 @@ public class Aufg47{
 			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || factors(n+consecs-1).size() != consecs)){
 				reset(facSets);
 				n=n+consecs-1;	
+			}else if(facSets[i].size() != consecs && (isPrime(n+consecs-2) || factors(n+consecs-2).size() != consecs)){
+				reset(facSets);
+				n=n+consecs-2;	
+				counter++;
+			}else if(facSets[i].size() != consecs){ 
+				counter++;	
 			}
 
 			numbers[i] = n;
@@ -53,6 +61,7 @@ public class Aufg47{
 		Arrays.sort(numbers);
 		System.out.println(Arrays.toString(numbers));
 		System.out.println(Arrays.toString(facSets));
+		System.out.println(counter);
 	}
 
 	public static long next(Long n, Set[] sets, int currentIdx){		

@@ -72,7 +72,8 @@ public class Aufg47{
 		Set<Factor> factors = new HashSet<Factor>();
 		long n = no;
 		long foo = 1;
-		for(long i = 2;  i <= no && n > 1; i++){
+
+		for(long i = 3;  i <= no && n > 1; i = i+2){
 			if(no%i == 0 && isPrime(i)){
 				Factor f = new Factor();
 				f.fac = i;

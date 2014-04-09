@@ -11,18 +11,18 @@ import java.util.ArrayList;
 
 public class Aufg47{
 
-	public static List<Long> ePrimes = eSieve(200000);
-	public static Long[] primeSearch;
+	public static List<Integer> ePrimes = eSieve(1000000);
+	public static Integer[] primeSearch;
 	public static int consecs = 4;
-    //public static Map<Long, Set> cache = new HashMap<Long, Set>(7000);	
+    //public static Map<Integer, Set> cache = new HashMap<Integer, Set>(7000);	
 
 	public static void main(String[] args){
-		primeSearch = ePrimes.toArray(new Long[1]);
+		primeSearch = ePrimes.toArray(new Integer[1]);
 		
-		long n = 1;
+		int n = 1;
 
 		Set[] facSets = new Set[consecs];
-		long[] numbers = new long[consecs];		
+		int[] numbers = new int[consecs];		
 
 		for(int j = 0; j < facSets.length; j++){
 			facSets[j] = factors(1);
@@ -37,17 +37,17 @@ public class Aufg47{
 			i = i%consecs;
 
 			if(isPrime(n)){
-				facSets[i] = new HashSet<Long>();
+				facSets[i] = new HashSet<Integer>();
 				
 			}else{
 				facSets[i] = factors(n);
 			}
 
             //advance over non possible numbers. //if we are not a candidate and us+3 is not a candidate, we can skip us+1 and an us+2 
-			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || (cand1 = factors(n+consecs-1)).size() != consecs)){
+			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || factors(n+consecs-1).size() != consecs)){
 				reset(facSets);
 				n=n+consecs-1;	
-			}else if(facSets[i].size() != consecs && (isPrime(n+consecs-2) || (cand2 = factors(n+consecs-2)).size() != consecs)){
+			}else if(facSets[i].size() != consecs && (isPrime(n+consecs-2) || factors(n+consecs-2).size() != consecs)){
 				reset(facSets);
 				n=n+consecs-2;
             }
@@ -58,17 +58,16 @@ public class Aufg47{
 		Arrays.sort(numbers);
 		System.out.println(Arrays.toString(numbers));
 		System.out.println(Arrays.toString(facSets));
-		System.out.println(counter);
 	}
 
-	public static long next(Long n, Set[] sets, int currentIdx){		
+	public static int next(Integer n, Set[] sets, int currentIdx){		
 		
 		return n+1;
 	}
 
 	public static void reset(Set[] sets){
 		for(int i=0; i<sets.length; i++)
-			sets[i] = new HashSet<Long>();
+			sets[i] = new HashSet<Integer>();
 	}
 
 	//tests that there are exactly x factors in all sets
@@ -98,11 +97,11 @@ public class Aufg47{
 		return true;
 	}
 
-	public static Set<Factor> factors(long no){
+	public static Set<Factor> factors(int no){
 		Set<Factor> factors = new HashSet<Factor>();
-		long n = no;
+		int n = no;
 		
-		for(Long prime: ePrimes){
+		for(Integer prime: ePrimes){
 			if(no%prime == 0){
 				Factor f = new Factor();
 				f.fac = prime;
@@ -120,20 +119,20 @@ public class Aufg47{
 		return factors;
 	}
 
-	public static List<Long> eSieve(long limit){
-		List<Long> primes = new LinkedList<Long>();
-		List<Long> candidates = new LinkedList<Long>();
+	public static List<Integer> eSieve(int limit){
+		List<Integer> primes = new LinkedList<Integer>();
+		List<Integer> candidates = new LinkedList<Integer>();
 
-		primes.add(2L);
-		for(long cand = 3; cand <= Math.max(limit,10); cand = cand+2){
+		primes.add(2);
+		for(int cand = 3; cand <= Math.max(limit,10); cand = cand+2){
 			candidates.add(cand);
 		}
 
-		long nextPrime = candidates.remove(0);
-		long limitTest = (long)Math.sqrt(limit);
+		int nextPrime = candidates.remove(0);
+		int limitTest = (int)Math.sqrt(limit);
 		while(nextPrime <= limitTest){
 			primes.add(nextPrime);
-			for (Iterator<Long> it = candidates.iterator(); it.hasNext(); ){
+			for (Iterator<Integer> it = candidates.iterator(); it.hasNext(); ){
 		    	if (it.next()%nextPrime==0)
 		        	it.remove();	
 			}
@@ -145,14 +144,14 @@ public class Aufg47{
 	}
 
 
-	public static boolean isPrime(long n){
+	public static boolean isPrime(int n){
 		return Arrays.binarySearch(primeSearch, n) >= 0;
 	}
 
 
 	public static class Factor{
-		long fac;
-		long exp;
+		int fac;
+		int exp;
 
 		public String toString(){
 			return "Factor: " + fac + " Exponent: " + exp;

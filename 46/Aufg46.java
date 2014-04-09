@@ -7,8 +7,10 @@ public class Aufg46{
     public static Map<Long, Boolean> cache = new TreeMap<Long, Boolean>();
  
     public static void main(String[] args){
+        long steps = 0;
         long n = 1;
         while(true){
+            steps++;
             n = n + 2;
             if(isPrime(n))
                 continue;
@@ -22,10 +24,14 @@ public class Aufg46{
                 iSq = 2*(i*i);
             }
 
+            if(steps % 100000 == 0){
+                System.out.println(n);
+                steps = 0;
+            }
 
             if(!isPrime(n - iSq)){
                 System.out.println("Erg = " + n + " Square: " + iSq + " Prim " + (n - iSq));
-                break;
+                //break;
             }
           
         }

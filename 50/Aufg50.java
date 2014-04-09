@@ -16,6 +16,8 @@ public class Aufg50{
         List<Integer> pl = p.asList();
         int res = 0;
         int k = 0;
+    
+        //select a list of primes we might need
         while(res < limit*1.5){
             res += pl.get(k);
             k++;
@@ -24,6 +26,7 @@ public class Aufg50{
 
         List<Integer> max = new ArrayList<Integer>();       
 
+        //start wih different primes
         for(int i = 0; i < 50; i++){
             List<Integer> cand = new ArrayList<Integer>(pl);
             cand = cand.subList(i, cand.size());

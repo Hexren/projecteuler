@@ -26,9 +26,9 @@ public class Aufg439{
         return divisors;
     }
 
-    public static BigInteger d(int k){
-        int sum = 0;
-        for(int i=1; i<k; i++){
+    public static BigInteger d(BigInteger k){
+        BigInteger sum = BigInteger.ZERO;
+        for(int i=BigInteger.ONE; i.compareTo(k) < 0; i = i.add(BigInteger.ONE)){
             for(int j=1; j<k; j++){
                 //todo 
             }

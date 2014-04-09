@@ -14,7 +14,7 @@ public class Aufg47{
 	public static List<Long> ePrimes = eSieve(200000);
 	public static Long[] primeSearch;
 	public static int consecs = 4;
-	
+    //public static Map<Long, Set> cache = new HashMap<Long, Set>(7000);	
 
 	public static void main(String[] args){
 		primeSearch = ePrimes.toArray(new Long[1]);
@@ -43,17 +43,14 @@ public class Aufg47{
 				facSets[i] = factors(n);
 			}
 
-			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || factors(n+consecs-1).size() != consecs)){
+            //advance over non possible numbers. //if we are not a candidate and us+3 is not a candidate, we can skip us+1 and an us+2 
+			if(facSets[i].size() != consecs && (isPrime(n+consecs-1) || (cand1 = factors(n+consecs-1)).size() != consecs)){
 				reset(facSets);
 				n=n+consecs-1;	
-			}else if(facSets[i].size() != consecs && (isPrime(n+consecs-2) || factors(n+consecs-2).size() != consecs)){
+			}else if(facSets[i].size() != consecs && (isPrime(n+consecs-2) || (cand2 = factors(n+consecs-2)).size() != consecs)){
 				reset(facSets);
-				n=n+consecs-2;	
-				counter++;
-			}else if(facSets[i].size() != consecs){ 
-				counter++;	
-			}
-
+				n=n+consecs-2;
+            }
 			numbers[i] = n;
 			
 		}
@@ -149,7 +146,6 @@ public class Aufg47{
 
 
 	public static boolean isPrime(long n){
-		//n = Math.abs(n);
 		return Arrays.binarySearch(primeSearch, n) >= 0;
 	}
 
@@ -163,7 +159,7 @@ public class Aufg47{
 		}
 
 		public int hashCode() {
-        	return 5; 
+        	return (int)(fac+exp); 
     	}
 
 		public boolean equals(Object other) {

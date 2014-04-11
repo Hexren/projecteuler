@@ -10,13 +10,14 @@ import java.util.Collections;
 public class Aufg51{
         public static Primes p;
 	public static void main(String[] args){
-		p = new Primes(100000);
+		p = new Primes(1000000);
 		List<Integer> pl = p.asList();
-		pl = getPrimesWithXDigits(pl, 5);
+        
+		pl = getPrimesWithXDigits(pl, 6);
         //System.out.println(pl.get(0));
-        System.out.println(getReplacementCands(toDigits(56003)));
+        //System.out.println(getReplacementCands(toDigits(56003)));
         for(Integer prime: pl){
-            for(Tuple replacement: getReplacementCands(toDigits(prime))){
+            for(List<Integer> replacement: getReplacementCands(toDigits(prime))){
                 //System.out.println("Testing:" + prime + " with replacement:" + replacement);       
                 List<Integer> primes = new ArrayList<Integer>(8);
                 for(int i = 0; i <= 9; i++){
@@ -25,7 +26,7 @@ public class Aufg51{
                         primes.add(newNumber);
                     }
                 }
-                if(primes.size()>=7){
+                if(primes.size()>=8){
                     Collections.sort(primes);
                     System.out.println(replacement);
                     System.out.println(primes);
@@ -42,7 +43,11 @@ public class Aufg51{
         for(Integer i: digits){
             origDig.set(i, replacement);
         }
-        return listToInt(origDig);
+        int result = listToInt(origDig);
+        //check there is no leading 0, that seems to be an assumption in problem 51
+        if(toDigits(original).size() != toDigits(result).size())
+            return 4; 
+        return result;
     }
     
 	public static List<Integer> getPrimesWithXDigits(List<Integer> primes, int x){
@@ -59,29 +64,20 @@ public class Aufg51{
     }
 
     //find candidate replacements in a primes
-    public static Set<Tuple> getReplacementCands(List<Integer> digits){
-        Set<Tuple> candidates = new HashSet<Tuple>(); 
+    public static Set<List<Integer>> getReplacementCands(List<Integer> digits){
+        Set<List<Integer>> candidates = new HashSet<List<Integer>>(); 
         for(int i=0; i<digits.size()-1; i++){
+            List<Integer> persisCand = new ArrayList<Integer>();
+            persisCand.add(i);
             for(int j=i+1; j <digits.size();j++)
                 if(digits.get(i) == digits.get(j)){
-                    candidates.add(new Tuple(i,j));
+                    persisCand.add(j);
+                    candidates.add(new ArrayList<Integer>(persisCand));
                 }
         }
         return candidates;
         
     } 
-
-    //compares 2 numbers given as digit lists
-	public static boolean equal(List<Integer> p1, List<Integer> p2, int ia, int ib){
-		for(int i=0; i<p1.size(); i++){
-			if(i == ia || i == ib)
-				continue;
-			if(p1.get(i) != p2.get(i)){
-				return false;
-			}
-		}
-		return true;
-	}
 
 	public static List<Integer> toDigits(int n){
 		int len = String.valueOf(n).length();		
@@ -149,35 +145,5 @@ public class Aufg51{
 		    return primes;
 	    }
     }
-
-    public static class Tuple{ 
-        public final int x; 
-        public final int y; 
-        public Tuple(int x, int y) { 
-            this.x = x; 
-            this.y = y; 
-        } 
-
-        public int hashCode() {
-        	return (int)(y+x); 
-    	}
-
-		public boolean equals(Object other) {
-			//System.out.println(this.toString());
-			//System.out.println(other.toString());
-			if (other.getClass() != getClass()) 
-      			return false; 
-    		if (x != ((Tuple)other).x) 
-       			return false;
-			if (y != ((Tuple)other).y) 
-       			return false;
-			return true;
-   		} 
-
-        public String toString(){
-            return "{"+x+","+y+"}";
-        }
-
-    } 
 
 }

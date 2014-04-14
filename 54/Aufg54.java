@@ -254,20 +254,32 @@ public class Aufg54{
 
         public boolean isPair(){
             int counter = 0;
-
+            List<Card> tmpCards = new ArrayList<Card>(cards);
+            Collections.sort(tmpCards);
+            highCards = new ArrayList<Card>();
             for(int i=0; i<cards.size()-1; i++){
-                if(cards.get(i).face == cards.get(i+1).face){
+                if(tmpCards.get(i).face == tmpCards.get(i+1).face){
                         counter++;
-                        highCards.add(cards.get(i));
+                        highCards.add(tmpCards.get(i));
+                        tmpCards.remove(i);
+                        tmpCards.remove(i);
+                        break;
                 }
                 
-            }   
-            Collections.sort(highCards);
-            Collections.reverse(highCards);  
-            if(counter == 1)
+            } 
+              
+  
+            if(counter == 1){
+                Collections.sort(highCards);
+                Collections.reverse(highCards);
+                Collections.sort(tmpCards); 
+                Collections.reverse(tmpCards); 
+                highCards.addAll(tmpCards);   
                 return true;
-            else
+            }
+            else{
                 return false;
+            }
         }
 
 

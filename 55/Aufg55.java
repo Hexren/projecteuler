@@ -39,12 +39,12 @@ public class Aufg55{
 		int len = String.valueOf(n).length();
         		
 		Integer[] numbers = new Integer[len];
-		
+		System.out.println("n: " + n);//Arrays.toString(numbers));
 		for(int i = len-1; i >=0; i--){
 			numbers[i] = (int)(n%10);
 			n = n/10;
 		}
-        System.out.println("n: " + Arrays.toString(numbers));
+        
 		return new ArrayList<Integer>(Arrays.asList(numbers));
 	}
 

@@ -16,6 +16,7 @@ public class Aufg57{
         BigInteger k2 = BigInteger.valueOf(0);
         int counter = 0;
 
+        //see infinite continued fractions on wikipedia
         for(int i=0; i<1000 ;i++){
             BigInteger h = a.multiply(h1).add(h2); 
             BigInteger k = a.multiply(k1).add(k2); 

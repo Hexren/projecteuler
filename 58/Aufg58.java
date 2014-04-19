@@ -9,16 +9,27 @@ import java.util.Collections;
 public class Aufg58{
 
 	public static void main(String[] args){
-		Primes p = new Primes(650000000);
+		Primes p = new Primes(1);
 		List<Integer> res = new ArrayList<Integer>();
 		        
 		int length = 2000;
 		int i = 1;
-        double perc;        
+        int primes = 0;
+		int numbers = 0;
+		double perc;        
 		do{
 			i = i + 2;
-			res.addAll(get4Corners(i));
-            perc = percentPrimes(res, p);
+			res = get4Corners(i);
+			//add the 4 new corners to the count of numbers
+			numbers += res.size();
+			//add every prime from the 4 corners to the prime count
+			for(Integer number: res){
+				if(p.isPrime(number)){
+					primes++;
+				}
+			}
+			//get new prime percentage 
+            perc = ((double)primes/numbers)*100;
 			System.out.println("i:" + i + " Percent:" + perc);
 		}while(perc > 10);
 
@@ -26,18 +37,7 @@ public class Aufg58{
 		
 
 	}
-
-	public static double percentPrimes(List<Integer> numbers, Primes p){
-		int primes = 0;		
-		for(Integer number: numbers){
-			if(p.isPrime(number)){
-				primes++;
-			}
-		}
-		double res = ((double)primes/numbers.size())*100;
-		return res;
-	}
-
+	
     public static List<Integer> get4Corners(Integer len){
 		List<Integer> res = new ArrayList<Integer>();
 		

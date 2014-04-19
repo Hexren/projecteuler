@@ -9,17 +9,18 @@ import java.util.Collections;
 public class Aufg58{
 
 	public static void main(String[] args){
-		Primes p = new Primes(600000000);
+		Primes p = new Primes(650000000);
 		List<Integer> res = new ArrayList<Integer>();
 		        
-		int length = 5;
-		int i = 1;        
+		int length = 2000;
+		int i = 1;
+        double perc;        
 		do{
 			i = i + 2;
 			res.addAll(get4Corners(i));
-			
-			System.out.println("i:" + i + " Percent:" + percentPrimes(res, p));
-		}while(percentPrimes(res, p) > 10);
+            perc = percentPrimes(res, p);
+			System.out.println("i:" + i + " Percent:" + perc);
+		}while(perc > 10);
 
         System.out.println(i);		
 		
@@ -37,14 +38,14 @@ public class Aufg58{
 		return res;
 	}
 
-    public static List<Integer> get4Corners(int len){
+    public static List<Integer> get4Corners(Integer len){
 		List<Integer> res = new ArrayList<Integer>();
 		
         if(len == 1){
             //res.add(1);        
         }else{
 		    int start = len * len;
-		    
+		    //System.out.println(start);
 		    res.add(start);
 			//System.out.println(start);
 		    res.add(start - (len-1));
@@ -59,34 +60,22 @@ public class Aufg58{
     }
 
 
-    public static class Primes implements Iterable<Integer>{
+    public static class Primes{
         
-        protected int limit;    
+        protected long limit;    
         protected boolean[] primes;
-        protected ArrayList<Integer> pl = new ArrayList<Integer>(1000);
-
+      
         public Primes(int limit){
             this.limit = limit;
             primes = eSieve(limit);
         }   
 
-        public List<Integer> asList(){
-            return pl;
-        } 
-        
-        
-        public Iterator<Integer> iterator(){
-            LinkedList<Integer> pList = new LinkedList<Integer>();
-            for(int i = 2; i<primes.length;i++){
-                if(primes[i]){
-                    pList.add(i);
-                }
-            }
-            return pList.iterator();
-        }    
         
         public boolean isPrime(int n){
-            return primes[n];
+            if(n <= limit)
+                return primes[n];
+            else
+                return isPrimeL(n);
         }
 
         protected boolean[] eSieve(int limit){
@@ -95,7 +84,6 @@ public class Aufg58{
             
             for(int i = 2; i<primes.length;i++){
                if(primes[i]){
-                  pl.add(i);
                   for(int j = 2*i; j < primes.length; j = j+i){
                     if(j%i==0)
                         primes[j] = false;
@@ -104,6 +92,25 @@ public class Aufg58{
             }
             
 		    return primes;
+	    }
+
+        public static boolean isPrimeL(long n){
+		    n = Math.abs(n);
+		    
+            if(n == 2)
+                return true;
+		    if(n <= 1) 
+			    return false;
+		    if(n % 2== 0)
+			    return false;
+		
+		    for(int i = 3; i <= Math.sqrt(n)+1; i = i + 2){
+			    if(n % i == 0){
+				    return false;
+		
+			    }
+		    }
+		    return true;
 	    }
 
 

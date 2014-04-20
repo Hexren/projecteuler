@@ -19,6 +19,7 @@ public class Aufg59{
 				for(int c=97; c <= 122; c++){
 					key[2] = (char)c;
 					String text = new String(decrypt(key,chars));
+					//check 3 most common english trigrams
 					if(text.contains("the") && text.contains("and") && text.contains("tha")){
 						System.out.println(text);
 						int sum = 0;

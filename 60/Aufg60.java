@@ -15,25 +15,24 @@ public class Aufg60{
 		Primes p = new Primes(LIMIT);
 		List<Set<Integer>> result = new ArrayList<Set<Integer>>();
 		long counter = 0;
-		Set<Integer> primes = new HashSet<Integer>();
 		//find legal tuples;
-		for(int i=2; i<=2000; i=i+1){
+		for(int i=2; i<=12000; i=i+1){
 			if(!p.isPrime(i))
 				continue;
-			primes.add(i);
-			for(int j=i+1; j<=2000; j++){
+			for(int j=i+1; j<=12000; j++){
 				if(!p.isPrime(j))
 					continue;			
 				if(concPrime(i,j,p)){
 					Set<Integer> set = new HashSet<Integer>();
 					set.add(i);
 					set.add(j);
-					result.add(set);
+					if(!result.contains(set))
+						result.add(set);
 				}
 			}
 		}
 			
-		System.out.println(result);
+		//System.out.println(result);
 		List<Set<Integer>> foo = concatPrimeSets(result, p);
 		System.out.println(foo);
 		Collections.sort(foo,
@@ -45,7 +44,35 @@ public class Aufg60{
 				}
 			});
 		System.out.println(foo);
+		List<Set<Integer>> bar = new ArrayList<Set<Integer>>();
+				
+		for(int i=0; i<=2000; i++){
+			if(!p.isPrime(i))
+				continue;
+			
+			Set<Integer> prime = new HashSet<Integer>();
+			prime.add(i);	
+			for(Set<Integer> b: foo){
+				if(isConcPrimeSets(b, prime, p)){
+					Set<Integer> set = new HashSet<Integer>();
+					set.addAll(prime);
+					set.addAll(b);
+					if(!bar.contains(set))
+						bar.add(set);
+			
+				}
+			}
+		}			
 		
+		Collections.sort(bar,
+            new Comparator<Set<Integer>>(){
+				public int compare(Set<Integer> a, Set<Integer> b){
+					Integer ia = sumSet(a);
+					Integer ib = sumSet(b);
+					return ia.compareTo(ib);
+				}
+			});
+		System.out.println(bar);
 	
 	}
 

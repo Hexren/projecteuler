@@ -7,26 +7,32 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 
 public class Aufg60{
-	static int LIMIT = 100000000;
-	static int TESTLIMIT = 8000;
+	static int LIMIT = 100000;
+	static int TESTLIMIT = 10000;
+	static Set<Integer> concatebalePrimes = new HashSet<Integer>();
+
+
 	public static void main(String[] args){
 		Primes p = new Primes(LIMIT);
 		List<Set<Integer>> result = new ArrayList<Set<Integer>>();
 		long counter = 0;
 		
-		for(int i=1; i<TESTLIMIT; i++){
+		for(int i=3; i<TESTLIMIT; i=i+2){
 			if(!p.isPrime(i))
 				continue;
 			Set<Integer> is = new HashSet<Integer>();
 			is.add(i);
+			concatebalePrimes.add(i);
 			result.add(is);
 		}			
 		
 		for(int i=0; i<4; i++){
 			result = addPrimes(result, p);
+			System.out.println(concatebalePrimes.size());			
 		}
 
 		Collections.sort(result,
@@ -52,36 +58,35 @@ public class Aufg60{
 
 	public static List<Set<Integer>> addPrimes(List<Set<Integer>> primeSets, Primes p){
 		List<Set<Integer>> result = new ArrayList<Set<Integer>>();
-		
+		Set<Integer> concatebalePrimesTmp = new HashSet<Integer>();
+
 		for(Set<Integer> primeSet: primeSets){
-			for(int i=1; i<TESTLIMIT; i++){
-				if(!p.isPrime(i)){
-					continue;
-				}
-				Set<Integer> prime = new HashSet<Integer>();
-				prime.add(i);
-				if(isConcPrimeSets(primeSet, prime, p)){
+			for(int i: concatebalePrimes){
+				
+				if(isConcPrimeSets(primeSet, i, p)){
 					Set<Integer> newRes = new HashSet<Integer>();
 					newRes.addAll(primeSet);
-					newRes.addAll(prime);
-					//if(!result.contains(newRes))					
+					newRes.add(i);
+					if(!result.contains(newRes)){					
 						result.add(newRes);
+						concatebalePrimesTmp.addAll(newRes);
+					
+					}
 				}
 			}
 		}
+		concatebalePrimes = concatebalePrimesTmp;
 		return result;
 	}
 
 	//tests all primes from 2 sets against each other
-	public static boolean isConcPrimeSets(Set<Integer> setA, Set<Integer> setB, Primes p){
-		if(!Collections.disjoint(setA,setB)){
+	public static boolean isConcPrimeSets(Set<Integer> setA, int b, Primes p){
+		if(setA.contains(b)){
 			return false;
 		}
 		for(Integer x: setA){
-			for(Integer y: setB){
-				if(!concPrime(x,y,p)){
+			if(!concPrime(x,b,p)){
 					return false;
-				}
 			}
 		}
 		return true;

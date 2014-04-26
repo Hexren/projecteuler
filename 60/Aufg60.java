@@ -7,64 +7,35 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Comparator;
+import java.util.TreeSet;
 
 
 public class Aufg60{
-	static int LIMIT = 100000000;
+	static int LIMIT = 100000;
+	static int TESTLIMIT = 10000;
+	static Set<Integer> concatebalePrimes = new HashSet<Integer>();
+
+
 	public static void main(String[] args){
 		Primes p = new Primes(LIMIT);
 		List<Set<Integer>> result = new ArrayList<Set<Integer>>();
 		long counter = 0;
-		//find legal tuples;
-		for(int i=2; i<=12000; i=i+1){
+		
+		for(int i=3; i<TESTLIMIT; i=i+2){
 			if(!p.isPrime(i))
 				continue;
-			for(int j=i+1; j<=12000; j++){
-				if(!p.isPrime(j))
-					continue;			
-				if(concPrime(i,j,p)){
-					Set<Integer> set = new HashSet<Integer>();
-					set.add(i);
-					set.add(j);
-					if(!result.contains(set))
-						result.add(set);
-				}
-			}
-		}
-			
-		//System.out.println(result);
-		List<Set<Integer>> foo = concatPrimeSets(result, p);
-		System.out.println(foo);
-		Collections.sort(foo,
-            new Comparator<Set<Integer>>(){
-				public int compare(Set<Integer> a, Set<Integer> b){
-					Integer ia = sumSet(a);
-					Integer ib = sumSet(b);
-					return ia.compareTo(ib);
-				}
-			});
-		System.out.println(foo);
-		List<Set<Integer>> bar = new ArrayList<Set<Integer>>();
-				
-		for(int i=0; i<=2000; i++){
-			if(!p.isPrime(i))
-				continue;
-			
-			Set<Integer> prime = new HashSet<Integer>();
-			prime.add(i);	
-			for(Set<Integer> b: foo){
-				if(isConcPrimeSets(b, prime, p)){
-					Set<Integer> set = new HashSet<Integer>();
-					set.addAll(prime);
-					set.addAll(b);
-					if(!bar.contains(set))
-						bar.add(set);
-			
-				}
-			}
+			Set<Integer> is = new HashSet<Integer>();
+			is.add(i);
+			concatebalePrimes.add(i);
+			result.add(is);
 		}			
 		
-		Collections.sort(bar,
+		for(int i=0; i<4; i++){
+			result = addPrimes(result, p);
+			System.out.println(concatebalePrimes.size());			
+		}
+
+		Collections.sort(result,
             new Comparator<Set<Integer>>(){
 				public int compare(Set<Integer> a, Set<Integer> b){
 					Integer ia = sumSet(a);
@@ -72,7 +43,8 @@ public class Aufg60{
 					return ia.compareTo(ib);
 				}
 			});
-		System.out.println(bar);
+		System.out.println(result);
+		System.out.println(result.size());
 	
 	}
 
@@ -84,32 +56,37 @@ public class Aufg60{
 		return res;
 	}
 
-	public static List<Set<Integer>> concatPrimeSets(List<Set<Integer>> primes, Primes p){
+	public static List<Set<Integer>> addPrimes(List<Set<Integer>> primeSets, Primes p){
 		List<Set<Integer>> result = new ArrayList<Set<Integer>>();
-		for(int i=0; i<primes.size()-1 ;i++){
-			for(int j=i+1; j<primes.size(); j++){
-				if(isConcPrimeSets(primes.get(i), primes.get(j), p)){
-					Set<Integer> combSet = new HashSet<Integer>();
-					combSet.addAll(primes.get(i));
-					combSet.addAll(primes.get(j));
-					if(!result.contains(combSet))					
-						result.add(combSet);
+		Set<Integer> concatebalePrimesTmp = new HashSet<Integer>();
+
+		for(Set<Integer> primeSet: primeSets){
+			for(int i: concatebalePrimes){
+				
+				if(isConcPrimeSets(primeSet, i, p)){
+					Set<Integer> newRes = new HashSet<Integer>();
+					newRes.addAll(primeSet);
+					newRes.add(i);
+					if(!result.contains(newRes)){					
+						result.add(newRes);
+						concatebalePrimesTmp.addAll(newRes);
+					
+					}
 				}
 			}
 		}
+		concatebalePrimes = concatebalePrimesTmp;
 		return result;
 	}
 
 	//tests all primes from 2 sets against each other
-	public static boolean isConcPrimeSets(Set<Integer> setA, Set<Integer> setB, Primes p){
-		if(!Collections.disjoint(setA,setB)){
+	public static boolean isConcPrimeSets(Set<Integer> setA, int b, Primes p){
+		if(setA.contains(b)){
 			return false;
 		}
 		for(Integer x: setA){
-			for(Integer y: setB){
-				if(!concPrime(x,y,p)){
+			if(!concPrime(x,b,p)){
 					return false;
-				}
 			}
 		}
 		return true;
@@ -118,41 +95,43 @@ public class Aufg60{
 
 	//tests if the possible concatenations of 2 numbers are prime
 	public static boolean concPrime(int x, int y, Primes p){
-		List<Integer> lxy = toDigits(x);
-		lxy.addAll(toDigits(y));
-		List<Integer> lyx = toDigits(y);
-		lyx.addAll(toDigits(x));
-		Integer xy = listToInt(lxy);
-		Integer yx = listToInt(lyx);
-				
-		if(p.isPrime(xy) && p.isPrime(yx))
-			return true;
-		return false;
+		int[] lxy = concat(toDigits(x),toDigits(y));
+		int xy = arrToInt(lxy);
+		if(!p.isPrime(xy))
+			return false;				
+		int[] lyx = concat(toDigits(y),toDigits(x));
+		int yx = arrToInt(lyx);	
+		if(!p.isPrime(yx))
+			return false;
+		return true;
+	}
+
+	public static int[] concat(int[] A, int[] B) {
+   		int aLen = A.length;
+	   	int bLen = B.length;
+	   	int[] C= new int[aLen+bLen];
+	   	System.arraycopy(A, 0, C, 0, aLen);
+	   	System.arraycopy(B, 0, C, aLen, bLen);
+	   	return C;
 	}
 
 
-	public static List<Integer> toDigits(int n){
-		int len = String.valueOf(n).length();		
-		Integer[] numbers = new Integer[len];
+	public static int[] toDigits(int n){
+		int len = (int) Math.log10(n) + 1;
+		int[] numbers = new int[len];
 		
 		for(int i = len-1; i >=0; i--){
 			numbers[i] = n%10;
 			n = n/10;
 		}
-		return new ArrayList<Integer>(Arrays.asList(numbers));
+		return numbers;
 	}
 
-    public static int listToInt(List<Integer> digits){
-        /*String n = "";
-        for(Integer i: digits){
-            n = n + i;
-        }
-        return Integer.parseInt(n);*/
-		int res = 0;
+    public static int arrToInt(int[] digits){
+        int res = 0;
 		int mult = 1;
-		for(int i=digits.size()-1; i>=0; i--){
-			res = res + (mult*digits.get(i));
-
+		for(int i=digits.length-1; i>=0; i--){
+			res = res + (mult*digits[i]);
 			mult *= 10;
 		}
 		return res;
@@ -197,7 +176,7 @@ public class Aufg60{
                   }
                }
             }
-            
+            primes[1] = false;
 		    return primes;
 	    }
 

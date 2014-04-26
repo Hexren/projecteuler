@@ -17,8 +17,10 @@ public class Aufg61{
         }while(run);
     }
 
+    //give this function only 4 digit integers
     public static void addToMap(int n, Map<Integer, Set<Integer>> numbers){
-
+        List<Integer> digits = toDigits(n);
+        int key = listToInt(digits.sublist(0,2));
     } 
 
 

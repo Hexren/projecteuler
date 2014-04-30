@@ -27,6 +27,7 @@ public class Aufg64{
 		int d0 = 1;
 		int a0 = (int) Math.sqrt(s);
 		Integer[] thisComb = {m0,d0,a0};
+        //return empty on perfect squares
 		if((int) Math.sqrt(s) == Math.sqrt(s))
 			return cont;
 		while(!seen.contains(Arrays.asList(thisComb))){

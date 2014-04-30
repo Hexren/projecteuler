@@ -20,13 +20,13 @@ public class Aufg65{
         int counter = 0;
         //see infinite continued fractions on wikipedia
         for(int i=1; i<=100 ;i++){
-            //System.out.println(contFrac(i));          
-            a = BigInteger.valueOf(contFrac(i));
+            //System.out.println(contFracE(i));          
+            a = BigInteger.valueOf(contFracE(i));
 
             h = a.multiply(h1).add(h2); 
             k = a.multiply(k1).add(k2); 
             
-            System.out.println(h + "/" + k);
+            //System.out.println(h + "/" + k);
             
             h2 = h1;
             h1 = h;
@@ -45,7 +45,7 @@ public class Aufg65{
     }
 
     //see http://oeis.org/A003417
-    public static int contFrac(int n){
+    public static int contFracE(int n){
         if(n==1)
             return 2;        
         if(n%3==0)

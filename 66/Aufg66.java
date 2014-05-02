@@ -1,30 +1,28 @@
+import java.util.HashMap;
+import java.util.Map;
+import static java.util.stream.Collectors.*;
+import static java.util.stream.IntStream.range;
+import java.awt.Point;
+
 public class Aufg66{
 
     public static void main(String[] args){
+        int x = 0;
         for(int d=2; d<=10; d++){
             if(!isSquare(d)){
-                int x = findMinX(d);
-                //System.out.println("D: " + d + " x: " +x);
+                x = Math.max(0,findMinX(d));
+                System.out.println("D: " + d + " x: " +x);
                 //diophantine()
-                System.out.println(diophantine(x,y,13));
+                //System.out.println(diophantine(x,y,13));
             }
         }
+
+        range(2,10).filter(e -> !isSquare(e))
+                    .mapToObj(d -> new Point(d, findMinX(d)) ).forEach(e -> System.out.println(e));
+
     }
 
-    //gives wrong numbers
-    public static int findMin(int d){
-        double y = 0;
-        int x = 1;
-        while(!isInt(y) || y<1){
-            y = getY(x,d);
-            x++;
-            if(x < 0)
-                throw new RuntimeException("AHAAHHHAHAHA at: " + d);
-   
-        }
-        return x;
-    }
-
+//617
     public static int findMinX(int d){
         int y = 1;
         double x = 0;
@@ -37,15 +35,6 @@ public class Aufg66{
    
         }
         return (int)x;
-    }
-
-
-    public static double getY(int x, int d){
-        double foo = (1-Math.pow(x,2));
-        //System.out.println("nenner: " + foo);
-        double res = -1 * ((foo)/d);
-        //System.out.println("res: " + res);
-        return Math.sqrt(res);
     }
 
     public static double getX(int y, int d){
@@ -68,5 +57,7 @@ public class Aufg66{
             return false;
         }
     }
+
+
 
 }

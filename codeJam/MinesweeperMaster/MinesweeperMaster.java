@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class MinesweeperMaster{
 	
 	public static String MINE = "x";
-	public static String CLICK = "C";
+	public static String CLICK = "c";
 	public static String OPEN = "O"; 
 	public static String NUMBER = "N";
 	public static String HIDDEN = "H";	 
@@ -15,34 +15,88 @@ public class MinesweeperMaster{
 
 	public static void main(String[] args) throws Exception{
 		Problem[] problems = getProblems();
+		int i = 1;		
+		int solv = 0;
+		int impo = 0;
 		for(Problem problem: problems){
+			System.out.println("Case #" + i + ":");
+			String[][] field = solveField(problem);
 			
-			//System.out.println(problem);
+			if(isLegal(field)){
+				solv++;
+				//System.out.println("Solved:");
+				//field=markFields(field);
+				//printField(field);
+			}else{
+				impo++;
+				System.out.println("Impossible");
+				System.out.println(problem);
+				field=markFields(field);
+				printField(field);
+			}			
+			i++;
 		}
-        System.out.println(problems[3]);
-        solveField(problems[3]);
+        System.out.println("Solved: " + solv);
+        System.out.println("Impossible: " + impo);
+        //solveField(problems[3]);
 	    //System.out.println(foo.toString().substring(0,10));
 	}
 
 
-    public static void solveField(Problem problem){
-        String[][] field = new String[problem.r][problem.c];
-        int m = 0;
-        for(int i=field.length-1; i>=0; i--){
+    public static String[][] solveField(Problem problem){
+       // problem.m = 10;
+      	String[][] field = simpleSolver(problem);
+		field = setClick(field);
+		return field;
+		//printField(field);  
+    }
+
+	public static boolean isLegal(String[][] field){
+		field = cloneField(field);	
+		field = setClick(field);
+		if(isLegalIntern(field))
+			return true;
+		else
+			return false;
+	}
+
+	public static String[][] setClick(String[][] field){
+		field = cloneField(field);	
+		for(int i=0; i<field.length; i++){
+            for(int j=0; j<field[i].length; j++){
+				
+				if(field[i][j]!=MINE){				
+					field[i][j]=CLICK;
+					if(isLegalIntern(field)){
+						return field;
+					}else{
+						field[i][j]=HIDDEN;
+					}
+                }
+			}
+        }
+		field[0][0] = CLICK;
+		return field;
+	}
+
+	//solves by filling each row from highest to lowest, no intelligence
+	public static String[][] simpleSolver(Problem problem){
+		String[][] field = new String[problem.r][problem.c];
+		int mines = problem.m;	
+		int placedMines = 0;        
+		
+		for(int i=field.length-1; i>=0; i--){
             for(int j=field[i].length-1; j>=0; j--){
-                if(m < problem.m){
+                if(placedMines < mines){
                     field[i][j]=MINE;
-                    m++;
+                    placedMines++;
                 }else{
-					field[i][j]=".";
+					field[i][j]=HIDDEN;
 				}
             }
         }  
-		printField(field);  
-		field=markFields(field);
-		printField(field);
- 
-    }
+		return field;
+	}
 
 	public static void printField(String[][] field){
         for(int i=0; i<field.length; i++){
@@ -67,7 +121,6 @@ public class MinesweeperMaster{
 		String[] ones = {MINE};
 		if(assertFieldHasOne(x,y,ones, field))
 			return true;
-		
 		return false;
 	}
 
@@ -83,39 +136,57 @@ public class MinesweeperMaster{
 	}
 
 
-	public static boolean isLegal(String[][] field){
+	public static boolean isLegalIntern(String[][] field){
 		String[][] markedField= markFields(field);
 		boolean res = checkFields(markedField);
 		return res;
 	}
 
-	//marks left bottom as click and reveals according to rules
-	public static String[][] markFields(String[][] field){
-		String[][] markedField = cloneField(field);		
-		markedField[0][0] = CLICK;
- 		for(int i=0; i<markedField.length; i++){
-            for(int j=0; j<markedField[i].length; j++){
+	//return true if this is a winning field
+	public static boolean checkFields(String[][] field){
+		for(int i=0; i<field.length; i++){
+            for(int j=0; j<field[i].length; j++){
 				
-				if(markedField[i][j]==CLICK){				
-	
-                }else if(hasOpenNeig(i,j,markedField) && markedField[i][j]!=MINE){
-					
-                    if(!hasMineNeig(i,j,markedField)){
-						markedField[i][j]=OPEN;
-					}else{
-						markedField[i][j]=NUMBER;
-					}
-                }else if(markedField[i][j]!=MINE){
-					markedField[i][j]=HIDDEN;
-				}
-            }
+				if(field[i][j]==HIDDEN){				
+					return false;
+                }
+			}
         }  
+		return true;
+	}
+
+	//reveals according to rules
+	public static String[][] markFields(String[][] field){
+		String[][] markedField = cloneField(field);
+
+		/*
+		very dumbly loops over and reveals until nothing is changing anymore
+		*/
+		boolean changed = true;
+		while(changed){
+			changed=false;
+			for(int i=0; i<markedField.length; i++){
+		        for(int j=0; j<markedField[i].length; j++){
+					if(markedField[i][j]!=HIDDEN || markedField[i][j]==CLICK)
+						continue;				
+		
+					if(hasOpenNeig(i,j,markedField) && markedField[i][j]!=MINE){
+						changed=true;
+					    if(!hasMineNeig(i,j,markedField)){
+							markedField[i][j]=OPEN;
+						}else{
+							markedField[i][j]=NUMBER;
+						}
+		            }else if(markedField[i][j]!=MINE){
+						markedField[i][j]=HIDDEN;
+					}
+		        }
+		    }  
+		}
 		return markedField;
 	}
 
-	public static boolean checkFields(String[][] field){
-		return true;
-	}
+
 
 
 	public static String[][] cloneField(String[][] field){

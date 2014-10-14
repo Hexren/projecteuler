@@ -9,7 +9,7 @@ public class MinesweeperMaster{
 	public static String CLICK = "c";
 	public static String OPEN = "O"; 
 	public static String NUMBER = "N";
-	public static String HIDDEN = "H";	 
+	public static String HIDDEN = ".";	 
 
 
 

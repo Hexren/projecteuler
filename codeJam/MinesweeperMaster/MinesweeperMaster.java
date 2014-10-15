@@ -80,6 +80,25 @@ public class MinesweeperMaster{
 	}
 
 	//solves by filling each row from highest to lowest, no intelligence
+	public static String[][] lineSolver(Problem problem){
+		String[][] field = new String[problem.r][problem.c];
+		int mines = problem.m;	
+		int placedMines = 0;        
+		
+		for(int i=field.length-1; i>=0; i--){
+            for(int j=field[i].length-1; j>=0; j--){
+                if(placedMines < mines){
+                    field[i][j]=MINE;
+                    placedMines++;
+                }else{
+					field[i][j]=HIDDEN;
+				}
+            }
+        }  
+		return field;
+	}
+
+	//solves by filling each row from highest to lowest, no intelligence
 	public static String[][] simpleSolver(Problem problem){
 		String[][] field = new String[problem.r][problem.c];
 		int mines = problem.m;	
@@ -110,7 +129,11 @@ public class MinesweeperMaster{
 
 	//returns true if one of the neighbors is CLICKED or OPEN
 	public static boolean hasOpenNeig(int x, int y, String[][] field){
-		String[] ones = {CLICK, OPEN};
+		String[] ones = {OPEN};
+        if(field[x][y] == CLICK){
+            return true;
+        }
+
 		if(assertFieldHasOne(x,y,ones, field))
 			return true;
 		return false;
@@ -155,6 +178,9 @@ public class MinesweeperMaster{
 		return true;
 	}
 
+
+    //public static int freeRow()
+
 	//reveals according to rules
 	public static String[][] markFields(String[][] field){
 		String[][] markedField = cloneField(field);
@@ -167,7 +193,7 @@ public class MinesweeperMaster{
 			changed=false;
 			for(int i=0; i<markedField.length; i++){
 		        for(int j=0; j<markedField[i].length; j++){
-					if(markedField[i][j]!=HIDDEN || markedField[i][j]==CLICK)
+					if(markedField[i][j]!=HIDDEN && markedField[i][j]!=CLICK )
 						continue;				
 		
 					if(hasOpenNeig(i,j,markedField) && markedField[i][j]!=MINE){
@@ -197,7 +223,8 @@ public class MinesweeperMaster{
 	}
 
 	public static Problem[] getProblems() throws Exception{
-        BufferedReader reader = new BufferedReader(new FileReader("C-small-practice.in"));
+        //BufferedReader reader = new BufferedReader(new FileReader("C-small-practice.in"));
+        BufferedReader reader = new BufferedReader(new FileReader("5.in"));
 		    
         //initialise problems array
         int numbProbl = Integer.parseInt(reader.readLine());

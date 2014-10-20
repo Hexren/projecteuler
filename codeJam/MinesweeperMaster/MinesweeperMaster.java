@@ -24,9 +24,10 @@ public class MinesweeperMaster{
 			
 			if(isLegal(field)){
 				solv++;
-				//System.out.println("Solved:");
-				//field=markFields(field);
-				//printField(field);
+				System.out.println("Solved:");
+                System.out.println(problem);
+				field=markFields(field);
+				printField(field);
 			}else{
 				impo++;
 				System.out.println("Impossible");
@@ -45,7 +46,7 @@ public class MinesweeperMaster{
 
     public static String[][] solveField(Problem problem){
        // problem.m = 10;
-      	String[][] field = simpleSolver(problem);
+      	String[][] field = stackSolver(problem);
 		field = setClick(field);
 		return field;
 		//printField(field);  
@@ -79,24 +80,133 @@ public class MinesweeperMaster{
 		return field;
 	}
 
-	//solves by filling each row from highest to lowest, no intelligence
-	public static String[][] lineSolver(Problem problem){
-		String[][] field = new String[problem.r][problem.c];
-		int mines = problem.m;	
-		int placedMines = 0;        
-		
-		for(int i=field.length-1; i>=0; i--){
-            for(int j=field[i].length-1; j>=0; j--){
-                if(placedMines < mines){
-                    field[i][j]=MINE;
-                    placedMines++;
-                }else{
-					field[i][j]=HIDDEN;
-				}
+    //from http://stackoverflow.com/questions/23039471/minesweeper-master-from-google-code-jam2014-qualification-round
+    public static String[][] stackSolver(Problem problem){
+        String[][] field = new String[problem.r][problem.c];
+        field = fillWithMines(field);
+        int n = problem.r * problem.c - problem.m;
+        int r = problem.r;
+        int c = problem.c;
+
+        /*
+        System.out.println("n:" + n);
+        System.out.println("r:" + r);
+        System.out.println("c:" + c);
+        */
+
+        
+        //N=1
+        if(n==1){
+            /*System.out.println("N=1");*/
+            return n1(field);
+        //single row or column
+        }else if(problem.r == 1 || problem.c == 1){ 
+            System.out.println("single row or column");
+            return singleRC(field, n);
+        //too few non mines
+        }else if((n%2==0 && n < 3) || (n%2!=0 && (n < 9 || r < 3|| c < 3))){
+            System.out.println("too few non mines");
+            return simpleSolver(problem);
+        //cant fill first to rows even       
+        }else if(n%2==0 && n < 2*c){
+            System.out.println("can't fill first to rows even");
+            return evenCantFill2Rows(field, n);
+        //cant fill first to rows odd      
+        }else if(n%2!=0 && n < (2*c + 3)){
+            System.out.println("can't fill first to rows odd");
+            return oddCantFill2Rows(field, n);  
+        //default case        
+        }else{
+            System.out.println("default case");
+            field = defaultCase(field, n);
+            return field;
+        }
+        
+    } 
+
+    public static String[][] defaultCase(String[][] field, int nonMines){
+        int placed = 0;
+        int n = nonMines;
+        int r = field.length;
+        int c = field[0].length;
+        int lastRow = 0;
+
+        //full rows
+        for(int row=0; row<n/c; row++){
+            for(int col=0; col<field[row].length; col++){
+                field[row][col] = HIDDEN;
             }
-        }  
-		return field;
-	}
+            lastRow = row;
+        }
+
+        //last row
+        for(int col=0; col<n%c; col++){
+            field[lastRow+1][col] = HIDDEN;
+        }
+
+        //prevent single non empty on last row
+        if(n%c == 1){
+            field[lastRow][field[0].length-1]=MINE;
+            field[lastRow+1][1]=HIDDEN;
+        }
+
+        return field;
+    }
+
+    //test this
+    public static String[][] oddCantFill2Rows(String[][] field, int nonMines){
+        int placed = 0;
+        //first two rows
+        for(int row=0; row<2; row++){
+            for(int col=0; col<(nonMines-3)/2; col++){
+                field[row][col] = HIDDEN;
+            }
+        }
+
+        //third row
+        for(int col=0; col<3; col++){
+            field[2][col] = HIDDEN;
+        }
+
+        return field;
+    }
+
+    public static String[][] evenCantFill2Rows(String[][] field, int nonMines){
+        int placed = 0;
+        for(int row=0; row<2; row++){
+            for(int col=0; col<nonMines/2; col++){
+                field[row][col] = HIDDEN;
+            }
+        }
+        return field;
+    }
+
+    public static String[][] singleRC(String[][] field, int nonMines){
+        int placed = 0;
+        for(int row=field.length-1; row>=0; row--){
+            for(int col=field[row].length-1; col>=0; col--){
+                if(nonMines < placed){
+                    field[row][col] = HIDDEN;
+                }
+            }
+        }
+        return field;
+    }
+
+    public static String[][] n1(String[][] field){
+        field[0][0] = HIDDEN;
+        return field;
+    }
+
+
+    public static String[][] fillWithMines(String[][] field){
+        for(int row=field.length-1; row>=0; row--){
+                for(int col=field[row].length-1; col>=0; col--){
+                    field[row][col] = MINE;
+            }
+        }
+        return field;
+    }
 
 	//solves by filling each row from highest to lowest, no intelligence
 	public static String[][] simpleSolver(Problem problem){
@@ -223,8 +333,8 @@ public class MinesweeperMaster{
 	}
 
 	public static Problem[] getProblems() throws Exception{
-        //BufferedReader reader = new BufferedReader(new FileReader("C-small-practice.in"));
-        BufferedReader reader = new BufferedReader(new FileReader("5.in"));
+        BufferedReader reader = new BufferedReader(new FileReader("C-small-practice.in"));
+        //BufferedReader reader = new BufferedReader(new FileReader("5.in"));
 		    
         //initialise problems array
         int numbProbl = Integer.parseInt(reader.readLine());

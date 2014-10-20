@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class MinesweeperMaster{
 	
-	public static String MINE = "x";
+	public static String MINE = "*";
 	public static String CLICK = "c";
 	public static String OPEN = "O"; 
 	public static String NUMBER = "N";
@@ -24,21 +24,21 @@ public class MinesweeperMaster{
 			
 			if(isLegal(field)){
 				solv++;
-				System.out.println("Solved:");
-                System.out.println(problem);
-				field=markFields(field);
+				//System.out.println("Solved:");
+                //System.out.println(problem);
+				//field=markFields(field);
 				printField(field);
 			}else{
 				impo++;
 				System.out.println("Impossible");
-				System.out.println(problem);
-				field=markFields(field);
-				printField(field);
+				//System.out.println(problem);
+				//field=markFields(field);
+				//printField(field);
 			}			
 			i++;
 		}
-        System.out.println("Solved: " + solv);
-        System.out.println("Impossible: " + impo);
+        //System.out.println("Solved: " + solv);
+        //System.out.println("Impossible: " + impo);
         //solveField(problems[3]);
 	    //System.out.println(foo.toString().substring(0,10));
 	}
@@ -97,27 +97,27 @@ public class MinesweeperMaster{
         
         //N=1
         if(n==1){
-            /*System.out.println("N=1");*/
-            return n1(field);
+            //System.out.println("N=1");
+            return simpleSolver(problem);
         //single row or column
         }else if(problem.r == 1 || problem.c == 1){ 
-            System.out.println("single row or column");
+            //System.out.println("single row or column");
             return singleRC(field, n);
         //too few non mines
         }else if((n%2==0 && n < 3) || (n%2!=0 && (n < 9 || r < 3|| c < 3))){
-            System.out.println("too few non mines");
+            //System.out.println("too few non mines");
             return simpleSolver(problem);
         //cant fill first to rows even       
         }else if(n%2==0 && n < 2*c){
-            System.out.println("can't fill first to rows even");
+            //System.out.println("can't fill first to rows even");
             return evenCantFill2Rows(field, n);
         //cant fill first to rows odd      
         }else if(n%2!=0 && n < (2*c + 3)){
-            System.out.println("can't fill first to rows odd");
+            //System.out.println("can't fill first to rows odd");
             return oddCantFill2Rows(field, n);  
         //default case        
         }else{
-            System.out.println("default case");
+            //System.out.println("default case");
             field = defaultCase(field, n);
             return field;
         }
@@ -185,8 +185,9 @@ public class MinesweeperMaster{
         int placed = 0;
         for(int row=field.length-1; row>=0; row--){
             for(int col=field[row].length-1; col>=0; col--){
-                if(nonMines < placed){
+                if(placed < nonMines){
                     field[row][col] = HIDDEN;
+                    placed++;
                 }
             }
         }
@@ -333,7 +334,7 @@ public class MinesweeperMaster{
 	}
 
 	public static Problem[] getProblems() throws Exception{
-        BufferedReader reader = new BufferedReader(new FileReader("C-small-practice.in"));
+        BufferedReader reader = new BufferedReader(new FileReader("C-large-practice.in"));
         //BufferedReader reader = new BufferedReader(new FileReader("5.in"));
 		    
         //initialise problems array
